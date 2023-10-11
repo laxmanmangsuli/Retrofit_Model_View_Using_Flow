@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Retrofit Model View</string>
+    <string name="timezone">Time Zone :-</string>
+    <string name="star_date">Start Date :- </string>
+    <string name="end_date">End Date :- </string>
+</resources>
