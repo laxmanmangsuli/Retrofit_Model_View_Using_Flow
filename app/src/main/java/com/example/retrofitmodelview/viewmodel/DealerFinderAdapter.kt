@@ -17,8 +17,6 @@ import com.bumptech.glide.Glide
 import com.example.retrofitmodelview.R
 import com.example.retrofitmodelview.databinding.SingleDealerBinding
 import com.example.retrofitmodelview.model.Event
-
-
 class DealerFinderAdapter(private val context: Context) :
     RecyclerView.Adapter<DealerFinderAdapter.ViewHolder>() {
     private var a=1
@@ -84,7 +82,6 @@ class DealerFinderAdapter(private val context: Context) :
     fun appendData(newList: List<Event?>) {
         eList.addAll(newList)
         notifyDataSetChanged()
-
 
     }
 
