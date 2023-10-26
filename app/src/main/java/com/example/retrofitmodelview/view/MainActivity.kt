@@ -17,11 +17,13 @@ import com.example.retrofitmodelview.databinding.ActivityMainBinding
 import com.example.retrofitmodelview.model.Event
 import com.example.retrofitmodelview.viewmodel.DealerFinderAdapter
 import com.example.retrofitmodelview.viewmodel.DealerFinderViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
-
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var viewModel: DealerFinderViewModel
     //    private var data: List<Event>? = null
@@ -39,7 +41,7 @@ class MainActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this@MainActivity)
         recyclerView.adapter = dealerFinderAdapter
 
-        viewModel = ViewModelProvider(this)[DealerFinderViewModel::class.java]
+        viewModel = ViewModelProvider(this).get(DealerFinderViewModel::class.java)
         val connectivityManager =
             getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val network = connectivityManager.activeNetwork
