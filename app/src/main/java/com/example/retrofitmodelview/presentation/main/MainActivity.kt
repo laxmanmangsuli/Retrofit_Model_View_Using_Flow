@@ -18,12 +18,12 @@ import com.example.retrofitmodelview.presentation.main.adapter.DealerFinderAdapt
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var viewModel: DealerFinderViewModel
-    //    private var data: List<Event>? = null
     private lateinit var binding: ActivityMainBinding
     private lateinit var dealerFinderAdapter: DealerFinderAdapter
     private var isLoading = false
@@ -32,6 +32,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+
+
 
         dealerFinderAdapter = DealerFinderAdapter(this@MainActivity)
         val recyclerView = binding.recycler
@@ -75,20 +78,25 @@ class MainActivity : AppCompatActivity() {
             try {
                 val currentPage = viewModel.getCurrentPage()
 
-                val list = viewModel.fetchEvents(currentPage, 10)
+                val data = viewModel.fetchEvents(currentPage, 10)
 
-                if (list != null) {
-                    if (list.isEmpty()) {
-                        viewModel.isLastPage = true
-                        Toast.makeText(this@MainActivity, "No more data to load", Toast.LENGTH_SHORT).show()
+                data.collect{
+                    val list=it
+                    if (list != null) {
+                        if (list.isEmpty()) {
+                            viewModel.isLastPage = true
+                            Toast.makeText(this@MainActivity, "No more data to load", Toast.LENGTH_SHORT).show()
+                        } else {
+                            binding.progress.visibility = View.GONE
+                            dealerFinderAdapter.appendData(list)
+                        }
                     } else {
-                        binding.progress.visibility = View.GONE
-                        dealerFinderAdapter.appendData(list)
+                        Toast.makeText(this@MainActivity, "No  data received", Toast.LENGTH_SHORT)
+                            .show()
                     }
-                } else {
-                    Toast.makeText(this@MainActivity, "No  data received", Toast.LENGTH_SHORT)
-                        .show()
                 }
+
+
             } catch (e: HttpException) {
                 Toast.makeText(this@MainActivity, "HTTP Error: ${e.code()}", Toast.LENGTH_SHORT)
                     .show()

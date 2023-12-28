@@ -16,7 +16,6 @@ import com.example.retrofitmodelview.databinding.SingleDealerBinding
 import com.example.retrofitmodelview.data.model.Event
 class DealerFinderAdapter(private val context: Context) :
     RecyclerView.Adapter<DealerFinderAdapter.ViewHolder>() {
-    private var a=1
     private var eList: MutableList<Event?> = mutableListOf()
 
 
@@ -58,15 +57,16 @@ class DealerFinderAdapter(private val context: Context) :
                     if (item.website != null && item.website!!.isNotEmpty()) {
                         val uriUrl = Uri.parse(item.website)
                         val launchBrowser = Intent(Intent.ACTION_VIEW, uriUrl)
-                        context.startActivity(launchBrowser)
+                        if (launchBrowser.resolveActivity(context.packageManager) !=null){
+                            context.startActivity(launchBrowser)
+                        }else{
+                            Toast.makeText(context,"No app available to handle the intent",Toast.LENGTH_SHORT).show()
+                        }
                     } else {
                         Toast.makeText(context, "URI is not Found", Toast.LENGTH_SHORT).show()
                     }
                 }
-
-                if (position == eList.size.minus(1)) {
-                    Log.d("TAG", "Page: $a ")
-                    ++a
+                if (position == eList.size-1) {
                     binding.progress.visibility=View.VISIBLE
                 }
             }
@@ -76,7 +76,7 @@ class DealerFinderAdapter(private val context: Context) :
     class ViewHolder(val binding: SingleDealerBinding) : RecyclerView.ViewHolder(binding.root) {
 
     }
-    fun appendData(newList: List<com.example.retrofitmodelview.data.model.Event?>) {
+    fun appendData(newList: List<Event?>) {
         eList.addAll(newList)
         notifyDataSetChanged()
 

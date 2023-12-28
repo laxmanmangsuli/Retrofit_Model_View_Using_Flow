@@ -2,8 +2,12 @@ package com.example.retrofitmodelview.presentation.main
 
 
 import androidx.lifecycle.ViewModel
+import com.example.retrofitmodelview.data.model.Event
 import com.example.retrofitmodelview.domain.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 @HiltViewModel
@@ -12,20 +16,21 @@ class DealerFinderViewModel @Inject constructor(private val mainRepository: Main
     private var currentPage = 1
     var isLastPage = false
 
-    suspend fun fetchEvents(page: Int, perPage: Int): List<com.example.retrofitmodelview.data.model.Event?>? {
+    fun fetchEvents(page: Int, perPage: Int): Flow<List<Event?>?> = flow {
         if (isLastPage) {
-            return null
+            emit(null)
+            return@flow
         }
-
         val response = mainRepository.fetchEvents(page, perPage)
-
-        if (response.events.isNullOrEmpty()) {
-            isLastPage = true
-        } else {
-            currentPage++
+        response.collect{
+          emit(it.events)
+            if(it.events.isNullOrEmpty()){
+                isLastPage = true
+            }
+            else {
+                currentPage++
+            }
         }
-
-        return response.events
     }
 
     fun getCurrentPage(): Int {
@@ -33,30 +38,3 @@ class DealerFinderViewModel @Inject constructor(private val mainRepository: Main
     }
 }
 
-
-//@HiltViewModel
-//class DealerFinderViewModel  @Inject constructor(private val repository: Repository) : ViewModel() {
-//
-//    private val apiService = RetrofitClient.eventsApiService
-//    private var currentPage = 1
-//    var isLastPage = false
-//
-//    suspend fun fetchEvents(page: Int, perPage: Int): List<Event?>? {
-//        if (isLastPage) {
-//            return null
-//        }
-//        val response = apiService.getEvents(page, perPage)
-//        if (response.events.isNullOrEmpty()) {
-//            isLastPage = true
-//        } else {
-//                currentPage++
-//
-//        }
-//        return response.events
-//    }
-//
-//    fun getCurrentPage(): Int {
-//        return currentPage
-//    }
-//
-//}

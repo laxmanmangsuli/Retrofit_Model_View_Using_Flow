@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 
 data class Data(
     @SerializedName("events")
-    var events: List<com.example.retrofitmodelview.data.model.Event?>?,
+    var events: List<Event?>?,
     @SerializedName("next_rest_url")
     var nextRestUrl: String?,
     @SerializedName("rest_url")
